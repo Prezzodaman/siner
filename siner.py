@@ -7,13 +7,15 @@ parser=argparse.ArgumentParser(description="Finds the sine of each value in a wa
 parser.add_argument("input_file", type=argparse.FileType("r"),help="The name of the original file")
 parser.add_argument("output_file", type=argparse.FileType("w"),help="The name of the sined file")
 parser.add_argument("-c", "--cosine", action="store_true", help="Finds the cosine instead")
+parser.add_argument("-o", "--offset", type=int, help="Offsets the angle of each byte (degrees)")
 
 args=parser.parse_args()
 input_file=args.input_file.name
 output_file=args.output_file.name
 cosine=args.cosine
+angle_offset=args.offset
 
-print("Siner v1.0.0")
+print("Siner v1.1.0")
 print("by Presley Peters, 2023")
 print()
 
@@ -46,6 +48,7 @@ if success:
 	else:
 		start_time=time.perf_counter()
 
+		angle_offset/=180/math.pi
 		position=0
 		print_delay=10000
 		while position<loop_length:
@@ -53,7 +56,7 @@ if success:
 				percent=round((position/len(file_orig))*100,2)
 				print("Processing... "+str(percent)+"%    ",end="\r")
 			if input_bit_depth==1:
-				value=(((file_orig[position]+128) & 255)/255)*2*math.pi
+				value=((((file_orig[position]+128) & 255)/255)*2*math.pi)+angle_offset
 				if cosine:
 					byte=math.cos(value)
 				else:
@@ -63,7 +66,7 @@ if success:
 				position+=1
 			elif input_bit_depth==2:
 				byte=((file_orig[position] | (file_orig[position+1]<<8))+32768) & 65535
-				value=(byte/65535)*2*math.pi
+				value=((byte/65535)*2*math.pi)+angle_offset
 				if cosine:
 					byte=math.cos(value)
 				else:
