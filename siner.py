@@ -15,7 +15,7 @@ output_file=args.output_file.name
 cosine=args.cosine
 angle_offset=args.offset
 
-print("Siner v1.1.0")
+print("Siner v1.1.1")
 print("by Presley Peters, 2023")
 print()
 
@@ -48,7 +48,10 @@ if success:
 	else:
 		start_time=time.perf_counter()
 
-		angle_offset/=180/math.pi
+		if angle_offset==None:
+			angle_offset=0
+		else:
+			angle_offset/=180/math.pi
 		position=0
 		print_delay=10000
 		while position<loop_length:
